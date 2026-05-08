@@ -1,7 +1,9 @@
 import { NextResponse } from 'next/server';
-import { Resend } from 'resend';
 
 export const runtime = 'nodejs';
+
+const MAILGUN_DOMAIN = process.env.MAILGUN_DOMAIN ?? 'sandboxf8a64112f9f749eaafca42e0a120f5ca.mailgun.org';
+const MAILGUN_API_KEY = process.env.MAILGUN_API_KEY!;
 
 export async function POST(req: Request) {
   try {
@@ -22,21 +24,34 @@ export async function POST(req: Request) {
       ts: new Date().toISOString(),
     });
 
-    if (process.env.RESEND_API_KEY) {
-      const resend = new Resend(process.env.RESEND_API_KEY);
-      await resend.emails.send({
-        from: 'leads@superboosted.design',
-        to: 'steve@superboosted.design',
-        replyTo: email,
-        subject: `New enquiry: ${business}`,
-        text:
-          `Name: ${name}\n` +
+    if (MAILGUN_API_KEY) {
+      const formData = new FormData();
+      formData.append('from', `Superboosted <postmaster@${MAILGUN_DOMAIN}>`);
+      formData.append('to', 'steve@superboosted.design');
+      formData.append('h:Reply-To', email);
+      formData.append('subject', `New enquiry: ${business}`);
+      formData.append(
+        'text',
+        `Name: ${name}\n` +
           `Business: ${business}\n` +
           `Email: ${email}\n` +
           `Phone: ${phone ?? '—'}\n` +
           `Kind: ${kind ?? '—'}\n\n` +
           `Message:\n${notes ?? '—'}`,
+      );
+
+      const credentials = Buffer.from(`api:${MAILGUN_API_KEY}`).toString('base64');
+      const mgRes = await fetch(`https://api.mailgun.net/v3/${MAILGUN_DOMAIN}/messages`, {
+        method: 'POST',
+        headers: { Authorization: `Basic ${credentials}` },
+        body: formData,
       });
+
+      if (!mgRes.ok) {
+        const text = await mgRes.text();
+        console.error('[mailgun] error', mgRes.status, text);
+        return NextResponse.json({ error: 'Server error' }, { status: 500 });
+      }
     }
 
     return NextResponse.json({ ok: true });
