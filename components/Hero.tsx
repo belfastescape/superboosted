@@ -29,7 +29,7 @@ export default function Hero() {
               href="#pricing"
               className="rounded-md border border-slate-300 bg-white px-5 py-3 text-sm font-medium text-ink-900 hover:bg-slate-50"
             >
-              View pricing
+              View our  pricing
             </a>
           </div>
           <p className="mt-4 text-sm text-slate-500">
