@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { Resend } from 'resend';
 
 export const runtime = 'nodejs';
 
@@ -11,8 +12,6 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
-    // For now we just log to Vercel's runtime logs so you can see leads while you wire email.
-    // View them in Vercel dashboard -> Project -> Logs.
     console.log('[lead]', {
       name,
       business,
@@ -23,26 +22,22 @@ export async function POST(req: Request) {
       ts: new Date().toISOString(),
     });
 
-    // ---------------------------------------------------------------------
-    // To enable real email delivery with Resend (https://resend.com):
-    //   1. npm i resend
-    //   2. Set RESEND_API_KEY in Vercel env
-    //   3. Uncomment the block below
-    // ---------------------------------------------------------------------
-    // const { Resend } = await import('resend');
-    // const resend = new Resend(process.env.RESEND_API_KEY!);
-    // await resend.emails.send({
-    //   from: 'leads@superboosted.design',
-    //   to: process.env.CONTACT_EMAIL ?? 'hello@superboosted.design',
-    //   subject: `New lead: ${business}`,
-    //   text:
-    //     `Name: ${name}\n` +
-    //     `Business: ${business}\n` +
-    //     `Email: ${email}\n` +
-    //     `Phone: ${phone ?? ''}\n` +
-    //     `Kind: ${kind ?? ''}\n\n` +
-    //     `${notes ?? ''}`,
-    // });
+    if (process.env.RESEND_API_KEY) {
+      const resend = new Resend(process.env.RESEND_API_KEY);
+      await resend.emails.send({
+        from: 'leads@superboosted.design',
+        to: 'steve@superboosted.design',
+        replyTo: email,
+        subject: `New enquiry: ${business}`,
+        text:
+          `Name: ${name}\n` +
+          `Business: ${business}\n` +
+          `Email: ${email}\n` +
+          `Phone: ${phone ?? '—'}\n` +
+          `Kind: ${kind ?? '—'}\n\n` +
+          `Message:\n${notes ?? '—'}`,
+      });
+    }
 
     return NextResponse.json({ ok: true });
   } catch (err) {

@@ -6,6 +6,7 @@ const links = [
   { href: '#demos', label: 'Demos' },
   { href: '#pricing', label: 'Pricing' },
   { href: '#faq', label: 'FAQ' },
+  { href: '/contact', label: 'Contact' },
 ];
 
 export default function Nav() {
@@ -21,11 +22,17 @@ export default function Nav() {
           <span className="font-semibold tracking-tight">Superboosted</span>
         </Link>
         <nav className="hidden items-center gap-6 text-sm text-slate-600 md:flex">
-          {links.map((l) => (
-            <a key={l.href} href={l.href} className="hover:text-ink-900">
-              {l.label}
-            </a>
-          ))}
+          {links.map((l) =>
+            l.href.startsWith('/') ? (
+              <Link key={l.href} href={l.href} className="hover:text-ink-900">
+                {l.label}
+              </Link>
+            ) : (
+              <a key={l.href} href={l.href} className="hover:text-ink-900">
+                {l.label}
+              </a>
+            )
+          )}
         </nav>
         <a
           href="#contact"
