@@ -14,7 +14,7 @@ export default function Hero() {
             <span className="text-accent-600">Done properly. Done fast.</span>
           </h1>
           <p className="mt-6 text-lg text-slate-600 md:text-xl">
-            A professional Website for your trade, shop or club — designed, built, hosted, and
+            A professional Website for your trade, shop or clubs — designed, built, hosted, and
             maintained from <strong className="text-ink-900">$49 a month</strong>. No tech headaches.
             No surprise invoices. Just a site that looks the part and does its job.
           </p>
