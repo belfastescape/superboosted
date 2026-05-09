@@ -22,7 +22,7 @@ export default function WhyUs() {
     <section className="border-y border-slate-200 bg-slate-50">
       <div className="mx-auto max-w-6xl px-4 py-16">
         <h2 className="text-2xl font-semibold tracking-tight text-ink-900 md:text-3xl">
-          Why small businesses pick us
+          Why small businesses picks us
         </h2>
         <div className="mt-10 grid gap-6 md:grid-cols-2 lg:grid-cols-4">
           {points.map((p) => (
