@@ -17,7 +17,7 @@ export default function WhatYouGet() {
           What you get
         </h2>
         <p className="mt-3 max-w-2xl text-slate-600">
-          Every plan includes the whole lot. No &ldquo;basic&rdquo; package missing things you actually need.
+          Every plan includes the  lot. No &ldquo;basic&rdquo; package missing things you actually need.
         </p>
         <div className="mt-10 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
           {features.map((f) => (
